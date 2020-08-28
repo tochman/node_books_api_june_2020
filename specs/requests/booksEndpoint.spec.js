@@ -1,6 +1,7 @@
 const app = require('../../app')
 const supertest = require('supertest')
 const expect = require('chai').expect
+const { factory } = require('../helpers')
 
 let server, request, response
 
@@ -13,10 +14,21 @@ after(done => {
   server.close(done)
 });
 
+beforeEach(async () => {
+  await factory.createMany('Book', 2, [
+    { id: 100, title: "This is a factory title" },
+    { id: 101, title: "NodeJS Intro" }
+  ])
+})
+
+afterEach(async () => {
+  await factory.cleanUp()
+})
+
 
 describe('GET /api/v1/books', () => {
 
-  before(async () => {
+  beforeEach(async () => {
     response = await request.get('/api/v1/books')
   });
 
@@ -32,7 +44,7 @@ describe('GET /api/v1/books', () => {
 
 describe('GET /api/v1/books/:id', () => {
   it('is expected to respond with a single book', async () => {
-    response = await request.get('/api/v1/books/6')
-    expect(response.body.book.title).to.equal('Learn Sequelize with Adi - in test')
+    response = await request.get('/api/v1/books/101')
+    expect(response.body.book.title).to.equal('NodeJS Intro')
   });
 });
