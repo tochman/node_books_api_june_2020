@@ -24,9 +24,15 @@ describe('GET /api/v1/books', () => {
     expect(response.status).to.equal(200)
   });
 
-  it('is expected to respond with a list of books', () => {
-    const expectedResponse = { books: [{ title: "NodeJS Intro" }] }
-    expect(response.body).to.deep.equal(expectedResponse)
+  it('is expected to respond with a list of 2 books', () => {
+    expect(response.body['books'].length).to.equal(2)
   });
 
+});
+
+describe('GET /api/v1/books/:id', () => {
+  it('is expected to respond with a single book', async () => {
+    response = await request.get('/api/v1/books/2')
+    expect(response.body.book.title).to.equal('Learn Sequelize with Adi')
+  });
 });
